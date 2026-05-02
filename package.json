@@ -1,0 +1,65 @@
+{
+  "name": "media-compressor",
+  "displayName": "Media Compressor",
+  "description": "Compress media files (images and videos) directly from the VSCode context menu using ffmpeg and pngquant.",
+  "version": "1.1.0",
+  "publisher": "media-compressor",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imvitalya/media-compressor"
+  },
+  "icon": "icon.png",
+  "license": "MIT",
+  "engines": {
+    "vscode": "^1.85.0"
+  },
+  "categories": ["Other"],
+  "keywords": ["ffmpeg", "pngquant", "compress", "image", "video", "figma"],
+  "activationEvents": [],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "mediaCompressor.compressMedia",
+        "title": "%command.compressMedia%"
+      }
+    ],
+    "menus": {
+      "explorer/context": [
+        {
+          "command": "mediaCompressor.compressMedia",
+          "group": "5_cutcopypaste",
+          "when": "resourceExtname =~ /\\.(jpg|jpeg|png|webp|gif|mp4|webm|mkv|mov)$/i"
+        }
+      ]
+    },
+    "configuration": {
+      "title": "%config.title%",
+      "properties": {
+        "mediaCompressor.ffmpegPath": {
+          "type": "string",
+          "default": "ffmpeg",
+          "description": "%config.ffmpegPath.description%"
+        },
+        "mediaCompressor.deleteOriginal": {
+          "type": "boolean",
+          "default": false,
+          "description": "%config.deleteOriginal.description%"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "package": "vsce package",
+    "publish": "vsce publish"
+  },
+  "devDependencies": {
+    "@types/node": "^20.0.0",
+    "@types/vscode": "^1.85.0",
+    "typescript": "^5.3.0",
+    "@vscode/vsce": "^2.22.0"
+  }
+}

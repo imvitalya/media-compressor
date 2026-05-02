@@ -1,0 +1,6 @@
+{
+  "command.compressMedia": "Compress Media",
+  "config.ffmpegPath.description": "Path to the ffmpeg executable (defaults to system PATH)",
+  "config.deleteOriginal.description": "Delete the original file after successful compression",
+  "config.title": "Media Compressor"
+}

@@ -1,0 +1,6 @@
+{
+  "command.compressMedia": "Сжать",
+  "config.ffmpegPath.description": "Путь к исполняемому файлу ffmpeg (по умолчанию используется из системного PATH)",
+  "config.deleteOriginal.description": "Удалять исходный файл после успешного сжатия",
+  "config.title": "Media Compressor"
+}
