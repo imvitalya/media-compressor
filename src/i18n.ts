@@ -23,7 +23,7 @@ const strings = {
     commandTitle: 'Сжать медиафайл',
     noSupportedFiles: 'Среди выбранных файлов нет поддерживаемых медиафайлов.',
     quickPickTitle: 'Media Compressor',
-    quickPickPlaceholder: (count: number) => `Выберите степень сжатия для ${pluralizeFiles(count, 'ru')}`,
+    quickPickPlaceholder: (count: number) => `Выберите действие для ${pluralizeFiles(count, 'ru')}`,
     optionLossless: 'Без потери качества',
     optionLosslessDesc: 'Оптимизация без деградации качества',
     option90: 'Сжать на 90%',
@@ -32,13 +32,21 @@ const strings = {
     option80Desc: 'Умеренное сжатие, хорошее качество',
     optionCustom: 'Произвольный процент...',
     optionCustomDesc: 'Указать своё значение качества (1–100)',
+    optionConvert: 'Сменить формат...',
+    optionConvertDesc: 'Конвертировать в другой формат',
+    mixedTypesError: 'Нельзя конвертировать формат для смеси картинок и видео — выберите файлы одного типа.',
+    formatPickTitle: 'Выберите формат',
     inputPrompt: 'Введите процент качества (1 = минимальное, 100 = максимальное)',
     inputPlaceholder: '75',
     inputError: 'Введите целое число от 1 до 100',
     progressOf: (current: number, total: number) => `${current} из ${total}`,
     successMessage: (count: number, before: string, after: string, reduction: string, elapsed: string) =>
       `Сжато файлов: ${count} за ${elapsed}с | ${before} → ${after} (−${reduction}%)`,
+    convertMessage: (count: number, elapsed: string) =>
+      `Конвертировано файлов: ${count} за ${elapsed}с`,
     errorProcessing: (count: number) => `Ошибки при обработке (${count}):`,
+    videoSizeIncreased: (name: string) =>
+      `${name}: видео уже хорошо сжато — перекодирование только увеличит размер. Файл пропущен.`,
     ffmpegNotFound: 'ffmpeg не найден в системе. Установите его и перезапустите VSCode.',
     howToInstall: 'Как установить?',
     install: 'Установить',
@@ -46,12 +54,18 @@ const strings = {
     pngquantMissing: 'pngquant не найден — PNG сжимается через ffmpeg (менее эффективно). Установите pngquant для лучшего результата.',
     ffmpegInstallInstructions: (cmd: string) => `Команда для установки ffmpeg:\n\n${cmd}`,
     pngquantInstallInstructions: (cmd: string) => `Команда для установки pngquant:\n\n${cmd}`,
+    webpEncoderMissing: 'WebP-энкодер не найден. Установите пакет webp для конвертации в WebP.',
+    webpInstallInstructions: (cmd: string) => `Команда для установки webp:\n\n${cmd}`,
+    svgoMissing: 'svgo не найден. Установите его для оптимизации SVG-файлов.',
+    svgoInstallInstructions: (cmd: string) => `Команда для установки svgo:\n\n${cmd}`,
+    svgSuccessMessage: (count: number, before: string, after: string, reduction: string, elapsed: string) =>
+      `Оптимизировано SVG: ${count} за ${elapsed}с | ${before} → ${after} (−${reduction}%)`,
   },
   en: {
     commandTitle: 'Compress Media',
     noSupportedFiles: 'No supported media files among the selected items.',
     quickPickTitle: 'Media Compressor',
-    quickPickPlaceholder: (count: number) => `Select compression level for ${pluralizeFiles(count, 'en')}`,
+    quickPickPlaceholder: (count: number) => `Select action for ${pluralizeFiles(count, 'en')}`,
     optionLossless: 'Lossless',
     optionLosslessDesc: 'Optimize without quality loss',
     option90: 'Compress to 90%',
@@ -60,13 +74,21 @@ const strings = {
     option80Desc: 'Moderate compression, good quality',
     optionCustom: 'Custom percentage...',
     optionCustomDesc: 'Enter a custom quality value (1–100)',
+    optionConvert: 'Convert format...',
+    optionConvertDesc: 'Convert to a different file format',
+    mixedTypesError: 'Cannot convert format for a mix of images and videos — select files of the same type.',
+    formatPickTitle: 'Select format',
     inputPrompt: 'Enter quality percentage (1 = minimum, 100 = maximum)',
     inputPlaceholder: '75',
     inputError: 'Enter a whole number from 1 to 100',
     progressOf: (current: number, total: number) => `${current} of ${total}`,
     successMessage: (count: number, before: string, after: string, reduction: string, elapsed: string) =>
       `Compressed: ${count} files in ${elapsed}s | ${before} → ${after} (−${reduction}%)`,
+    convertMessage: (count: number, elapsed: string) =>
+      `Converted: ${count} files in ${elapsed}s`,
     errorProcessing: (count: number) => `Errors while processing (${count}):`,
+    videoSizeIncreased: (name: string) =>
+      `${name}: video is already well-compressed — re-encoding would only increase the size. File skipped.`,
     ffmpegNotFound: 'ffmpeg not found. Please install it and restart VSCode.',
     howToInstall: 'How to install?',
     install: 'Install',
@@ -74,6 +96,12 @@ const strings = {
     pngquantMissing: 'pngquant not found — PNG files will be compressed via ffmpeg (less efficient). Install pngquant for better results.',
     ffmpegInstallInstructions: (cmd: string) => `Install ffmpeg with:\n\n${cmd}`,
     pngquantInstallInstructions: (cmd: string) => `Install pngquant with:\n\n${cmd}`,
+    webpEncoderMissing: 'WebP encoder not found. Install the webp package to convert files to WebP.',
+    webpInstallInstructions: (cmd: string) => `Install webp with:\n\n${cmd}`,
+    svgoMissing: 'svgo not found. Install it to optimize SVG files.',
+    svgoInstallInstructions: (cmd: string) => `Install svgo with:\n\n${cmd}`,
+    svgSuccessMessage: (count: number, before: string, after: string, reduction: string, elapsed: string) =>
+      `Optimized SVG: ${count} in ${elapsed}s | ${before} → ${after} (−${reduction}%)`,
   }
 };
 

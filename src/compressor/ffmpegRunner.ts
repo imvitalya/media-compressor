@@ -30,6 +30,30 @@ export async function checkPngquant(): Promise<boolean> {
   }
 }
 
+// Кешируем результат — subprocess запускается один раз за сессию
+let _ffmpegWebpSupport: boolean | null = null;
+
+export async function checkFfmpegWebpSupport(): Promise<boolean> {
+  if (_ffmpegWebpSupport !== null) return _ffmpegWebpSupport;
+  try {
+    const ffmpeg = getFfmpegPath();
+    const { stdout } = await execAsync(`"${ffmpeg}" -encoders -hide_banner`);
+    _ffmpegWebpSupport = stdout.includes('libwebp') || /V[A-Z.]{5} webp /.test(stdout);
+  } catch {
+    _ffmpegWebpSupport = false;
+  }
+  return _ffmpegWebpSupport;
+}
+
+export async function checkCwebp(): Promise<boolean> {
+  try {
+    await execAsync('cwebp -version');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export async function runFfmpeg(args: string[]): Promise<void> {
   const ffmpeg = getFfmpegPath();
   await execFileAsync(ffmpeg, args);
@@ -40,12 +64,26 @@ export async function runPngquant(args: string[]): Promise<void> {
   return new Promise((resolve, reject) => {
     const proc = execFile('pngquant', args);
     proc.on('close', (code) => {
-      if (code === 0 || code === 99) {
-        resolve();
-      } else {
-        reject(new Error(`pngquant завершился с кодом ${code}`));
-      }
+      if (code === 0 || code === 99) { resolve(); }
+      else { reject(new Error(`pngquant завершился с кодом ${code}`)); }
     });
     proc.on('error', reject);
   });
+}
+
+export async function runCwebp(args: string[]): Promise<void> {
+  await execFileAsync('cwebp', args);
+}
+
+export async function checkSvgo(): Promise<boolean> {
+  try {
+    await execAsync('svgo --version');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function runSvgo(args: string[]): Promise<void> {
+  await execFileAsync('svgo', args);
 }

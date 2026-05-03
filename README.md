@@ -1,17 +1,19 @@
 # Media Compressor
 
-Compress images and videos directly from the VSCode Explorer context menu using **ffmpeg** and **pngquant** — no browser uploads, no third-party services.
+Compress images, videos, and SVG files directly from the VSCode Explorer context menu — no browser uploads, no third-party services.
 
 ---
 
 ## Features
 
-- Right-click any image or video in the Explorer → **Compress Media**
+- Right-click any supported file in the Explorer → **Compress Media**
 - Four compression levels via a quick-pick menu:
   - **Lossless** — optimizes file size without any quality loss
   - **Compress to 90%** — light compression, virtually no visible difference
   - **Compress to 80%** — moderate compression, great quality
   - **Custom %** — enter any value from 1 to 100
+- **Convert format** — convert images to JPG / PNG / WebP, videos to MP4 / WebM / MKV / MOV
+- **SVG optimization** — right-click any `.svg` file and optimize it instantly via `svgo`, no menu needed
 - **Multi-file support** — select multiple files at once; results go into a `compressed/` folder next to the originals
 - **Single file** — saved next to the original with a `-compressed` suffix (e.g. `image-compressed.png`)
 - Notification shows file size before → after and reduction percentage
@@ -20,23 +22,30 @@ Compress images and videos directly from the VSCode Explorer context menu using 
 
 ## Supported Formats
 
-| Type   | Formats                        |
-|--------|--------------------------------|
+| Type   | Formats                              |
+|--------|--------------------------------------|
 | Images | `.jpg` `.jpeg` `.png` `.webp` `.gif` |
-| Video  | `.mp4` `.webm` `.mkv` `.mov`   |
+| Vector | `.svg`                               |
+| Video  | `.mp4` `.webm` `.mkv` `.mov`         |
 
 ## Requirements
 
-The extension requires **ffmpeg** (for videos and JPG/WebP) and **pngquant** (for PNG, same algorithm as TinyPNG).
+The extension uses **ffmpeg**, **pngquant**, **svgo**, and **cwebp** depending on the file type and action. If any tool is missing, the extension will notify you and offer to install it automatically with a single click — or you can install it yourself at any time.
 
-If either tool is missing, the extension will notify you and offer to install it automatically with a single click — or you can install it yourself at any time.
+| Tool | Used for |
+|------|----------|
+| `ffmpeg` | Video compression, JPG/WebP encoding |
+| `pngquant` | PNG compression (same algorithm as TinyPNG) |
+| `svgo` | SVG optimization |
+| `cwebp` | WebP encoding (fallback if ffmpeg lacks libwebp) |
 
 ## Usage
 
 1. Right-click a file (or a selection of files) in the Explorer
 2. Click **Compress Media**
-3. Choose a compression level from the menu
-4. Wait for the progress notification — done!
+3. For images/videos: choose a compression level or format from the menu
+4. For SVG: optimization starts immediately — no menu needed
+5. Wait for the progress notification — done!
 
 ## Extension Settings
 
@@ -51,7 +60,7 @@ If either tool is missing, the extension will notify you and offer to install it
 
 # Media Compressor (Русский)
 
-Сжатие изображений и видео прямо из Explorer в VSCode — через **ffmpeg** и **pngquant**. Без загрузки на сторонние сервисы.
+Сжатие изображений, видео и SVG-файлов прямо из Explorer в VSCode. Без загрузки на сторонние сервисы.
 
 ---
 
@@ -63,6 +72,8 @@ If either tool is missing, the extension will notify you and offer to install it
   - **Сжать на 90%** — лёгкое сжатие, разница почти незаметна
   - **Сжать на 80%** — умеренное сжатие, хорошее качество
   - **Произвольный процент** — введите любое значение от 1 до 100
+- **Смена формата** — конвертация картинок в JPG / PNG / WebP, видео в MP4 / WebM / MKV / MOV
+- **Оптимизация SVG** — правый клик на `.svg` и оптимизация запускается сразу через `svgo`, без меню
 - **Несколько файлов** — результаты сохраняются в папку `compressed/` рядом с оригиналами
 - **Один файл** — сохраняется рядом с оригиналом с суффиксом `-compressed` (например `image-compressed.png`)
 - Уведомление показывает размер до → после и процент уменьшения
@@ -71,23 +82,30 @@ If either tool is missing, the extension will notify you and offer to install it
 
 ## Поддерживаемые форматы
 
-| Тип    | Форматы                        |
-|--------|--------------------------------|
+| Тип      | Форматы                              |
+|----------|--------------------------------------|
 | Картинки | `.jpg` `.jpeg` `.png` `.webp` `.gif` |
-| Видео  | `.mp4` `.webm` `.mkv` `.mov`   |
+| Вектор   | `.svg`                               |
+| Видео    | `.mp4` `.webm` `.mkv` `.mov`         |
 
 ## Требования
 
-Расширению нужны **ffmpeg** (для видео и JPG/WebP) и **pngquant** (для PNG, тот же алгоритм что у TinyPNG).
+Расширение использует **ffmpeg**, **pngquant**, **svgo** и **cwebp** в зависимости от типа файла и действия. Если какой-то программы нет — расширение само об этом сообщит и предложит установить одной кнопкой.
 
-Если какой-то программы нет — расширение само об этом сообщит и предложит установить одной кнопкой. Или можно установить самостоятельно в любой момент.
+| Инструмент | Используется для |
+|------------|-----------------|
+| `ffmpeg` | Сжатие видео, кодирование JPG/WebP |
+| `pngquant` | Сжатие PNG (тот же алгоритм что у TinyPNG) |
+| `svgo` | Оптимизация SVG |
+| `cwebp` | Кодирование WebP (если ffmpeg собран без libwebp) |
 
 ## Использование
 
 1. Правый клик на файл (или выделить несколько файлов) в Explorer
 2. Выбрать **Сжать**
-3. Выбрать степень сжатия из меню
-4. Дождаться уведомления о завершении — готово!
+3. Для картинок/видео: выбрать степень сжатия или формат из меню
+4. Для SVG: оптимизация запускается сразу, без меню
+5. Дождаться уведомления о завершении — готово!
 
 ## Настройки расширения
 

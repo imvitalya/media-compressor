@@ -1,20 +1,31 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export function getOutputPath(inputPath: string, isMultiple: boolean): string {
+export function calculateOutputPath(inputPath: string, isMultiple: boolean, targetExt?: string): string {
   const dir = path.dirname(inputPath);
-  const ext = path.extname(inputPath);
-  const basename = path.basename(inputPath, ext);
+  const inputExt = path.extname(inputPath);
+  const ext = targetExt ?? inputExt;
+  const basename = path.basename(inputPath, inputExt);
 
   if (!isMultiple) {
-    return path.join(dir, `${basename}-compressed${ext}`);
+    const suffix = targetExt && targetExt !== inputExt ? '' : '-compressed';
+    return path.join(dir, `${basename}${suffix}${ext}`);
   }
 
-  const compressedDir = path.join(dir, 'compressed');
-  if (!fs.existsSync(compressedDir)) {
-    fs.mkdirSync(compressedDir, { recursive: true });
+  return path.join(dir, 'compressed', `${basename}${ext}`);
+}
+
+export function getOutputPath(inputPath: string, isMultiple: boolean, targetExt?: string): string {
+  const outputPath = calculateOutputPath(inputPath, isMultiple, targetExt);
+
+  if (isMultiple) {
+    const dir = path.dirname(outputPath);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
   }
-  return path.join(compressedDir, path.basename(inputPath));
+
+  return outputPath;
 }
 
 export function getFileSize(filePath: string): number {
