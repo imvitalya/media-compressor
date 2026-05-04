@@ -1,22 +1,22 @@
 import * as fs from 'fs';
 import * as path from 'path';
 
-export function calculateOutputPath(inputPath: string, isMultiple: boolean, targetExt?: string): string {
+export function calculateOutputPath(inputPath: string, isMultiple: boolean, targetExt?: string, suffix = '-compressed'): string {
   const dir = path.dirname(inputPath);
   const inputExt = path.extname(inputPath);
   const ext = targetExt ?? inputExt;
   const basename = path.basename(inputPath, inputExt);
 
   if (!isMultiple) {
-    const suffix = targetExt && targetExt !== inputExt ? '' : '-compressed';
-    return path.join(dir, `${basename}${suffix}${ext}`);
+    const outputSuffix = targetExt && targetExt !== inputExt ? '' : suffix;
+    return path.join(dir, `${basename}${outputSuffix}${ext}`);
   }
 
   return path.join(dir, 'compressed', `${basename}${ext}`);
 }
 
-export function getOutputPath(inputPath: string, isMultiple: boolean, targetExt?: string): string {
-  const outputPath = calculateOutputPath(inputPath, isMultiple, targetExt);
+export function getOutputPath(inputPath: string, isMultiple: boolean, targetExt?: string, suffix = '-compressed'): string {
+  const outputPath = calculateOutputPath(inputPath, isMultiple, targetExt, suffix);
 
   if (isMultiple) {
     const dir = path.dirname(outputPath);

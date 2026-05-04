@@ -1,3 +1,4 @@
+import * as fs from 'fs';
 import * as path from 'path';
 import { runFfmpeg, runPngquant, runCwebp, checkPngquant, checkFfmpegWebpSupport, checkCwebp } from './ffmpegRunner';
 
@@ -27,28 +28,32 @@ async function encodeWebp(inputPath: string, outputPath: string, quality: number
   }
 }
 
+const PNG_FFMPEG_ARGS = (inputPath: string, outputPath: string) => [
+  '-y', '-i', inputPath,
+  '-vf', 'split[s0][s1];[s0]palettegen=max_colors=256:reserve_transparent=1:stats_mode=full[p];[s1][p]paletteuse=dither=sierra2_4a',
+  outputPath
+];
+
 async function compressPng(inputPath: string, outputPath: string, quality: number): Promise<void> {
   if (await checkPngquant()) {
     const [min, max] = qualityToPngquantRange(quality);
     await runPngquant([`--quality=${min}-${max}`, '--force', '--output', outputPath, inputPath]);
+    if (!fs.existsSync(outputPath)) {
+      await runFfmpeg(PNG_FFMPEG_ARGS(inputPath, outputPath));
+    }
   } else {
-    await runFfmpeg([
-      '-y', '-i', inputPath,
-      '-vf', 'split[s0][s1];[s0]palettegen=max_colors=256:reserve_transparent=1:stats_mode=full[p];[s1][p]paletteuse=dither=sierra2_4a',
-      outputPath
-    ]);
+    await runFfmpeg(PNG_FFMPEG_ARGS(inputPath, outputPath));
   }
 }
 
 async function compressPngLossless(inputPath: string, outputPath: string): Promise<void> {
   if (await checkPngquant()) {
     await runPngquant(['--quality=90-100', '--force', '--output', outputPath, inputPath]);
+    if (!fs.existsSync(outputPath)) {
+      await runFfmpeg(PNG_FFMPEG_ARGS(inputPath, outputPath));
+    }
   } else {
-    await runFfmpeg([
-      '-y', '-i', inputPath,
-      '-vf', 'split[s0][s1];[s0]palettegen=max_colors=256:reserve_transparent=1:stats_mode=full[p];[s1][p]paletteuse=dither=sierra2_4a',
-      outputPath
-    ]);
+    await runFfmpeg(PNG_FFMPEG_ARGS(inputPath, outputPath));
   }
 }
 

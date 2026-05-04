@@ -9,7 +9,7 @@ interface PlatformInstall {
   terminalCmd: string;
 }
 
-function getInstallInfo(tool: Tool): PlatformInstall {
+export function getInstallInfo(tool: Tool): PlatformInstall {
   const platform = os.platform();
 
   const matrix: Record<Tool, Record<string, PlatformInstall>> = {
@@ -92,6 +92,26 @@ export function showSvgoMissingError(): void {
         vscode.window.showInformationMessage(s.svgoInstallInstructions(displayCmd), { modal: true });
       } else if (selection === s.install && terminalCmd) {
         runInstallInTerminal('svgo', terminalCmd);
+      }
+    });
+}
+
+export function showMissingDependenciesNotification(tools: Tool[]): void {
+  if (tools.length === 0) return;
+  const s = i18n();
+
+  const cmds = tools
+    .map((tool) => getInstallInfo(tool).terminalCmd)
+    .filter((cmd) => cmd !== '');
+
+  vscode.window
+    .showWarningMessage(s.missingDepsMessage(tools.join(', ')), s.installAll)
+    .then((action) => {
+      if (action === s.installAll && cmds.length > 0) {
+        const terminal = vscode.window.createTerminal('Media Compressor: install');
+        terminal.show();
+        terminal.sendText(cmds.join(' && '));
+        vscode.window.showInformationMessage(s.installing(tools.join(', ')));
       }
     });
 }

@@ -1,6 +1,8 @@
 {
   "command.compressMedia": "Сжать",
+  "command.installDependencies": "Media Compressor: Установить зависимости",
   "config.ffmpegPath.description": "Путь к исполняемому файлу ffmpeg (по умолчанию используется из системного PATH)",
   "config.deleteOriginal.description": "Удалять исходный файл после успешного сжатия",
+  "config.outputSuffix.description": "Суффикс для сжатых файлов при обработке одного файла (например \"-compressed\" → image-compressed.png, \"@1x\" → image@1x.png). При выборе нескольких файлов не применяется.",
   "config.title": "Media Compressor"
 }

@@ -56,7 +56,12 @@ export async function checkCwebp(): Promise<boolean> {
 
 export async function runFfmpeg(args: string[]): Promise<void> {
   const ffmpeg = getFfmpegPath();
-  await execFileAsync(ffmpeg, args);
+  try {
+    await execFileAsync(ffmpeg, args);
+  } catch (err: any) {
+    const stderr = err.stderr || err.message || String(err);
+    throw new Error(`ffmpeg error: ${stderr}`);
+  }
 }
 
 export async function runPngquant(args: string[]): Promise<void> {
@@ -72,7 +77,12 @@ export async function runPngquant(args: string[]): Promise<void> {
 }
 
 export async function runCwebp(args: string[]): Promise<void> {
-  await execFileAsync('cwebp', args);
+  try {
+    await execFileAsync('cwebp', args);
+  } catch (err: any) {
+    const stderr = err.stderr || err.message || String(err);
+    throw new Error(`cwebp error: ${stderr}`);
+  }
 }
 
 export async function checkSvgo(): Promise<boolean> {
@@ -85,5 +95,10 @@ export async function checkSvgo(): Promise<boolean> {
 }
 
 export async function runSvgo(args: string[]): Promise<void> {
-  await execFileAsync('svgo', args);
+  try {
+    await execFileAsync('svgo', args);
+  } catch (err: any) {
+    const stderr = err.stderr || err.message || String(err);
+    throw new Error(`svgo error: ${stderr}`);
+  }
 }

@@ -60,6 +60,23 @@ const strings = {
     svgoInstallInstructions: (cmd: string) => `Команда для установки svgo:\n\n${cmd}`,
     svgSuccessMessage: (count: number, before: string, after: string, reduction: string, elapsed: string) =>
       `Оптимизировано SVG: ${count} за ${elapsed}с | ${before} → ${after} (−${reduction}%)`,
+    missingDepsMessage: (tools: string) => `Media Compressor: не найдены — ${tools}. Установите их для работы расширения.`,
+    installAll: 'Установить',
+    installDepsTitle: 'Media Compressor: Установка зависимостей',
+    installDepsPlaceholder: 'Выберите инструмент для установки',
+    installAllMissing: (n: number) => `Установить все отсутствующие (${n})`,
+    installAllMissingDesc: (names: string) => names,
+    separatorIndividual: 'Отдельные инструменты',
+    toolInstalled: 'установлен',
+    toolNotInstalled: 'не установлен',
+    toolAlreadyInstalled: (name: string) => `${name} уже установлен в системе.`,
+    allToolsInstalled: 'Все инструменты уже установлены.',
+    toolDetail: {
+      ffmpeg:   'Обязателен. Сжатие видео (MP4, WebM, MKV, MOV), кодирование JPG и GIF.',
+      pngquant: 'Рекомендуется. Сжатие PNG с высоким качеством (тот же алгоритм, что у TinyPNG). Без него PNG сжимается через ffmpeg — менее эффективно.',
+      svgo:     'Необходим для оптимизации SVG-файлов.',
+      webp:     'Нужен для конвертации в WebP, если ffmpeg собран без поддержки libwebp.',
+    },
   },
   en: {
     commandTitle: 'Compress Media',
@@ -102,6 +119,23 @@ const strings = {
     svgoInstallInstructions: (cmd: string) => `Install svgo with:\n\n${cmd}`,
     svgSuccessMessage: (count: number, before: string, after: string, reduction: string, elapsed: string) =>
       `Optimized SVG: ${count} in ${elapsed}s | ${before} → ${after} (−${reduction}%)`,
+    missingDepsMessage: (tools: string) => `Media Compressor: missing tools — ${tools}. Install them to enable compression.`,
+    installAll: 'Install All',
+    installDepsTitle: 'Media Compressor: Install Dependencies',
+    installDepsPlaceholder: 'Select a tool to install',
+    installAllMissing: (n: number) => `Install all missing (${n})`,
+    installAllMissingDesc: (names: string) => names,
+    separatorIndividual: 'Individual tools',
+    toolInstalled: 'installed',
+    toolNotInstalled: 'not installed',
+    toolAlreadyInstalled: (name: string) => `${name} is already installed.`,
+    allToolsInstalled: 'All tools are already installed.',
+    toolDetail: {
+      ffmpeg:   'Required. Video compression (MP4, WebM, MKV, MOV), JPG and GIF encoding.',
+      pngquant: 'Recommended. High-quality PNG compression (same algorithm as TinyPNG). Without it, PNG falls back to ffmpeg — less efficient.',
+      svgo:     'Required for SVG file optimization.',
+      webp:     'Needed for WebP conversion when ffmpeg is built without libwebp support.',
+    },
   }
 };
 

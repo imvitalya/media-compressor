@@ -99,10 +99,11 @@ interface ProcessResult {
 async function processFile(
   filePath: string,
   action: Action,
-  isMultiple: boolean
+  isMultiple: boolean,
+  outputSuffix: string
 ): Promise<ProcessResult> {
   const targetExt = action.kind === 'convert' ? action.targetExt : undefined;
-  const outputPath = getOutputPath(filePath, isMultiple, targetExt);
+  const outputPath = getOutputPath(filePath, isMultiple, targetExt, outputSuffix);
   const sizeBefore = getFileSize(filePath);
 
   if (action.kind === 'convert') {
@@ -141,7 +142,7 @@ async function processFile(
   return { before: sizeBefore, after: sizeAfter };
 }
 
-async function processSvgFiles(svgPaths: string[]): Promise<void> {
+async function processSvgFiles(svgPaths: string[], outputSuffix: string): Promise<void> {
   const s = i18n();
   const isMultiple = svgPaths.length > 1;
 
@@ -163,7 +164,7 @@ async function processSvgFiles(svgPaths: string[]): Promise<void> {
         });
 
         try {
-          const outputPath = getOutputPath(filePath, isMultiple);
+          const outputPath = getOutputPath(filePath, isMultiple, undefined, outputSuffix);
           const before = getFileSize(filePath);
           await optimizeSvg(filePath, outputPath);
           totalBefore += before;
@@ -201,7 +202,9 @@ export async function compressMediaCommand(uri: vscode.Uri, uris: vscode.Uri[]):
     return;
   }
 
-  // ── SVG flow: нет QuickPick, одно действие — оптимизация ────────────────
+  // SVG flow: нет QuickPick, одно действие — оптимизация 
+  const outputSuffix = vscode.workspace.getConfiguration('mediaCompressor').get<string>('outputSuffix', '-compressed');
+
   if (svgPaths.length > 0) {
     const hasSvgo = await checkSvgo();
     if (!hasSvgo) {
@@ -209,13 +212,13 @@ export async function compressMediaCommand(uri: vscode.Uri, uris: vscode.Uri[]):
       if (filePaths.length === 0) return;
       // При смешанном выборе показываем ошибку svgo, но продолжаем с медиафайлами
     } else {
-      await processSvgFiles(svgPaths);
+      await processSvgFiles(svgPaths, outputSuffix);
     }
   }
 
   if (filePaths.length === 0) return;
 
-  // ── Media flow ───────────────────────────────────────────────────────────
+  // Media flow
   const hasFfmpeg = await checkFfmpeg();
   if (!hasFfmpeg) {
     showFfmpegNotFoundError();
@@ -264,7 +267,7 @@ export async function compressMediaCommand(uri: vscode.Uri, uris: vscode.Uri[]):
         });
 
         try {
-          const result = await processFile(filePath, action, isMultiple);
+          const result = await processFile(filePath, action, isMultiple, outputSuffix);
 
           if (result.skipped === 'size_increased') {
             warnings.push(s.videoSizeIncreased(fileName));

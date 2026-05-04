@@ -1,6 +1,8 @@
 {
   "command.compressMedia": "Compress Media",
+  "command.installDependencies": "Media Compressor: Install Dependencies",
   "config.ffmpegPath.description": "Path to the ffmpeg executable (defaults to system PATH)",
   "config.deleteOriginal.description": "Delete the original file after successful compression",
+  "config.outputSuffix.description": "Suffix appended to compressed single files (e.g. \"-compressed\" → image-compressed.png, \"@1x\" → image@1x.png). Has no effect when multiple files are selected.",
   "config.title": "Media Compressor"
 }
