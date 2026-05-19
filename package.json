@@ -2,7 +2,7 @@
   "name": "media-compressor",
   "displayName": "Media Compressor",
   "description": "Compress media files (images and videos) directly from the VSCode context menu using ffmpeg and pngquant.",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "publisher": "media-compressor",
   "repository": {
     "type": "git",
