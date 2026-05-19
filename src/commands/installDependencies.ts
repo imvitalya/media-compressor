@@ -1,22 +1,22 @@
 import * as vscode from 'vscode';
-import { checkFfmpeg, checkPngquant, checkCwebp, checkSvgo } from '../compressor/ffmpegRunner';
-import { getInstallInfo } from '../utils/errorHandler';
+import { checkFfmpeg, checkPngquant, checkCwebp, checkSvgo, checkOxipng } from '../compressor/ffmpegRunner';
+import { getInstallInfo, Tool } from '../utils/errorHandler';
 import { i18n } from '../i18n';
 
-type Tool = 'ffmpeg' | 'pngquant' | 'svgo' | 'webp';
-
-const ALL_TOOLS: Tool[] = ['ffmpeg', 'pngquant', 'svgo', 'webp'];
+const ALL_TOOLS: Tool[] = ['ffmpeg', 'pngquant', 'oxipng', 'svgo', 'webp'];
 
 async function checkAllTools(): Promise<Map<Tool, boolean>> {
-  const [ffmpeg, pngquant, cwebp, svgo] = await Promise.all([
+  const [ffmpeg, pngquant, cwebp, svgo, oxipng] = await Promise.all([
     checkFfmpeg(),
     checkPngquant(),
     checkCwebp(),
     checkSvgo(),
+    checkOxipng(),
   ]);
   return new Map<Tool, boolean>([
     ['ffmpeg', ffmpeg],
     ['pngquant', pngquant],
+    ['oxipng', oxipng],
     ['svgo', svgo],
     ['webp', cwebp],
   ]);

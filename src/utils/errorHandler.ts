@@ -2,7 +2,7 @@ import * as os from 'os';
 import * as vscode from 'vscode';
 import { i18n } from '../i18n';
 
-type Tool = 'ffmpeg' | 'pngquant' | 'webp' | 'svgo';
+export type Tool = 'ffmpeg' | 'pngquant' | 'webp' | 'svgo' | 'oxipng';
 
 interface PlatformInstall {
   displayCmd: string;
@@ -32,7 +32,12 @@ export function getInstallInfo(tool: Tool): PlatformInstall {
       darwin:  { displayCmd: 'npm install -g svgo', terminalCmd: 'npm install -g svgo' },
       linux:   { displayCmd: 'npm install -g svgo', terminalCmd: 'npm install -g svgo' },
       win32:   { displayCmd: 'npm install -g svgo', terminalCmd: 'npm install -g svgo' },
-    }
+    },
+    oxipng: {
+      darwin:  { displayCmd: 'brew install oxipng',            terminalCmd: 'brew install oxipng' },
+      linux:   { displayCmd: 'sudo apt-get install oxipng',    terminalCmd: 'sudo apt-get install -y oxipng' },
+      win32:   { displayCmd: 'winget install oxipng',          terminalCmd: 'winget install oxipng' },
+    },
   };
 
   return (

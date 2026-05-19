@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import * as vscode from 'vscode';
-import { compressImage, compressImageLossless, convertImage } from '../compressor/imageCompressor';
+import { compressImage, compressImageLossless, convertImage, Quality, ConvertMode } from '../compressor/imageCompressor';
 import { compressVideo, compressVideoLossless, convertVideo } from '../compressor/videoCompressor';
 import { checkFfmpeg, checkPngquant, checkFfmpegWebpSupport, checkCwebp, checkSvgo } from '../compressor/ffmpegRunner';
 import { optimizeSvg } from '../compressor/svgOptimizer';
@@ -11,22 +11,46 @@ import { isMediaFile, isImageFile, isVideoFile, isSvgFile } from '../utils/valid
 import { IMAGE_CONVERT_FORMATS, VIDEO_CONVERT_FORMATS } from '../constants';
 import { i18n } from '../i18n';
 
-type Quality = number | 'lossless';
-type Action = { kind: 'compress'; quality: Quality } | { kind: 'convert'; targetExt: string };
+type Action = { kind: 'compress'; quality: Quality } | { kind: 'convert'; targetExt: string; mode: ConvertMode };
 
 interface QuickPickOption extends vscode.QuickPickItem {
   value: Quality | 'custom' | 'convert';
 }
 
-function buildMainOptions(): QuickPickOption[] {
+function buildQualityOptions(includeConvert: boolean): QuickPickOption[] {
   const s = i18n();
-  return [
+  const items: QuickPickOption[] = [
     { label: `$(check) ${s.optionLossless}`,  description: s.optionLosslessDesc, value: 'lossless' },
     { label: `$(arrow-down) ${s.option90}`,   description: s.option90Desc,       value: 90 },
     { label: `$(arrow-down) ${s.option80}`,   description: s.option80Desc,       value: 80 },
     { label: `$(edit) ${s.optionCustom}`,     description: s.optionCustomDesc,   value: 'custom' },
-    { label: `$(symbol-file) ${s.optionConvert}`, description: s.optionConvertDesc, value: 'convert' },
   ];
+  if (includeConvert) {
+    items.push({ label: `$(symbol-file) ${s.optionConvert}`, description: s.optionConvertDesc, value: 'convert' });
+  }
+  return items;
+}
+
+async function askQuality(title: string, placeholder: string): Promise<Quality | undefined> {
+  const selected = await vscode.window.showQuickPick(buildQualityOptions(false), { title, placeHolder: placeholder });
+  if (!selected) return undefined;
+  if (selected.value === 'custom') {
+    return await askCustomQuality();
+  }
+  return selected.value as Quality;
+}
+
+async function askConvertCompress(): Promise<boolean | undefined> {
+  const s = i18n();
+  const items: (vscode.QuickPickItem & { value: boolean })[] = [
+    { label: `$(check) ${s.convertCompressYes}`,        description: s.convertCompressYesDesc, value: true },
+    { label: `$(circle-slash) ${s.convertCompressNo}`,  description: s.convertCompressNoDesc,  value: false },
+  ];
+  const picked = await vscode.window.showQuickPick(items, {
+    title: s.convertCompressTitle,
+    placeHolder: s.convertCompressPlaceholder,
+  });
+  return picked?.value;
 }
 
 async function askCustomQuality(): Promise<number | undefined> {
@@ -59,7 +83,7 @@ async function askTargetFormat(isImage: boolean): Promise<string | undefined> {
 async function resolveAction(filePaths: string[]): Promise<Action | undefined> {
   const s = i18n();
 
-  const selected = await vscode.window.showQuickPick(buildMainOptions(), {
+  const selected = await vscode.window.showQuickPick(buildQualityOptions(true), {
     title: s.quickPickTitle,
     placeHolder: s.quickPickPlaceholder(filePaths.length)
   });
@@ -78,7 +102,17 @@ async function resolveAction(filePaths: string[]): Promise<Action | undefined> {
     const targetExt = await askTargetFormat(allImages);
     if (!targetExt) return undefined;
 
-    return { kind: 'convert', targetExt };
+    const shouldCompress = await askConvertCompress();
+    if (shouldCompress === undefined) return undefined;
+
+    if (!shouldCompress) {
+      return { kind: 'convert', targetExt, mode: 'strict' };
+    }
+
+    const quality = await askQuality(s.convertQualityTitle, s.convertQualityPlaceholder);
+    if (quality === undefined) return undefined;
+
+    return { kind: 'convert', targetExt, mode: { quality } };
   }
 
   if (selected.value === 'custom') {
@@ -108,9 +142,9 @@ async function processFile(
 
   if (action.kind === 'convert') {
     if (isImageFile(filePath)) {
-      await convertImage(filePath, outputPath);
+      await convertImage(filePath, outputPath, action.mode);
     } else {
-      await convertVideo(filePath, outputPath);
+      await convertVideo(filePath, outputPath, action.mode);
     }
   } else {
     const { quality } = action;

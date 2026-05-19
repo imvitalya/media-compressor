@@ -1,5 +1,6 @@
 import * as path from 'path';
 import { runFfmpeg } from './ffmpegRunner';
+import type { ConvertMode } from './imageCompressor';
 
 function qualityToCrf(quality: number): number {
   return Math.round(18 + (100 - quality) * 0.33);
@@ -31,7 +32,13 @@ export async function compressVideo(inputPath: string, outputPath: string, quali
   ]);
 }
 
-export async function convertVideo(inputPath: string, outputPath: string): Promise<void> {
+export async function convertVideo(inputPath: string, outputPath: string, mode: ConvertMode): Promise<void> {
+  // strict = только смена контейнера, без перекодирования (если контейнер совместим с кодеком)
+  if (mode === 'strict') {
+    await runFfmpeg(['-y', '-i', inputPath, '-c', 'copy', outputPath]);
+    return;
+  }
+
   const outExt = path.extname(outputPath).toLowerCase();
 
   if (outExt === '.webm') {

@@ -4,5 +4,6 @@
   "config.ffmpegPath.description": "Path to the ffmpeg executable (defaults to system PATH)",
   "config.deleteOriginal.description": "Delete the original file after successful compression",
   "config.outputSuffix.description": "Suffix appended to compressed single files (e.g. \"-compressed\" → image-compressed.png, \"@1x\" → image@1x.png). Has no effect when multiple files are selected.",
+  "config.useOxipng.description": "Use oxipng as a second-stage lossless PNG optimizer (TinyPNG-level results). Disable if you don't want to install oxipng — PNG will still be compressed by pngquant but the output will be 10–20% larger.",
   "config.title": "Media Compressor"
 }

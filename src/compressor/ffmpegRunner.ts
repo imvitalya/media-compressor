@@ -102,3 +102,21 @@ export async function runSvgo(args: string[]): Promise<void> {
     throw new Error(`svgo error: ${stderr}`);
   }
 }
+
+export async function checkOxipng(): Promise<boolean> {
+  try {
+    await execAsync('oxipng --version');
+    return true;
+  } catch {
+    return false;
+  }
+}
+
+export async function runOxipng(args: string[]): Promise<void> {
+  try {
+    await execFileAsync('oxipng', args);
+  } catch (err: any) {
+    const stderr = err.stderr || err.message || String(err);
+    throw new Error(`oxipng error: ${stderr}`);
+  }
+}
